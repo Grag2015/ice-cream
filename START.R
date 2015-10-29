@@ -58,15 +58,3 @@ sqldf("select distinct AGEP from acs")
 # также на выходе должен быть файл "Code book" (руками) "Study design"+преобразования+"Code book"
 # Here your tidy datasets are
 
-
-# Создание хранилища датасетов --------------------------------------------
-h5createFile("garage") # тут храним все переменные по проекту
-
-# создаем структуру хранилища
-h5createGroup("garage","retail")
-h5createGroup("garage","weather")
-h5createGroup("garage","economist")
-
-# просмотр хранилища
-h5ls("garage")
-H5close()
