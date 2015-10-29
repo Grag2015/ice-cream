@@ -1,101 +1,101 @@
-# исходный файл морож 13-15.xlsx был преобразован в excel (удалены промежуточные итоги и лишние строки и столбцы)
-# см. морож 13-15._tidy_step1.xlsx, далее все 5 листов были экспортированы в файлы csv
+# РёСЃС…РѕРґРЅС‹Р№ С„Р°Р№Р» РјРѕСЂРѕР¶ 13-15.xlsx Р±С‹Р» РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅ РІ excel (СѓРґР°Р»РµРЅС‹ РїСЂРѕРјРµР¶СѓС‚РѕС‡РЅС‹Рµ РёС‚РѕРіРё Рё Р»РёС€РЅРёРµ СЃС‚СЂРѕРєРё Рё СЃС‚РѕР»Р±С†С‹)
+# СЃРј. РјРѕСЂРѕР¶ 13-15._tidy_step1.xlsx, РґР°Р»РµРµ РІСЃРµ 5 Р»РёСЃС‚РѕРІ Р±С‹Р»Рё СЌРєСЃРїРѕСЂС‚РёСЂРѕРІР°РЅС‹ РІ С„Р°Р№Р»С‹ csv
 
 
-# 1. Загрузка и предобработка данных -----------------------------------------
+# 1. Р—Р°РіСЂСѓР·РєР° Рё РїСЂРµРґРѕР±СЂР°Р±РѕС‚РєР° РґР°РЅРЅС‹С…  ------------------------------------------
 
-# загрузка 1
-tmp1 <- read.csv("./Raw data/Retail/25янв 13 - 12авг13.csv", header = T, dec = ',', sep = ";")
-# обработка дат
+# Р·Р°РіСЂСѓР·РєР° 1
+tmp1 <- read.csv("./Raw data/Retail/25СЏРЅРІ 13 - 12Р°РІРі13.csv", header = T, dec = ',', sep = ";")
+# РѕР±СЂР°Р±РѕС‚РєР° РґР°С‚
 newnames <- paste0(substr(names(tmp1[,3:ncol(tmp1)]),2,6),'.',"2013")
 names(tmp1) <- c(names(tmp1[,1:2]),newnames)
-names(tmp1)[2] <- "Наименование.товара1"
+names(tmp1)[2] <- "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°1"
 
-# загрузка 2
-tmp2 <- read.csv("./Raw data/Retail/13авг13 - 28фев14.csv", header = T, dec = ',', sep = ";")
-# обработка дат
+# Р·Р°РіСЂСѓР·РєР° 2
+tmp2 <- read.csv("./Raw data/Retail/13Р°РІРі13 - 28С„РµРІ14.csv", header = T, dec = ',', sep = ";")
+# РѕР±СЂР°Р±РѕС‚РєР° РґР°С‚
 
-ny <- which(names(tmp2)=="X01.01.01.01142.й.период", arr.ind = T)
+ny <- which(names(tmp2)=="X01.01.01.01142.Р№.РїРµСЂРёРѕРґ", arr.ind = T)
 newnames <- paste0(substr(names(tmp2[,3:(ny-1)]),2,6),'.',"2013")
 newnames2 <- paste0(substr(names(tmp2[,ny:ncol(tmp2)]),2,6),'.',"2014")
 names(tmp2) <- c(names(tmp2[,1:2]),newnames, newnames2)
-names(tmp2)[2] <- "Наименование.товара2"
+names(tmp2)[2] <- "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°2"
 
-# загрузка 3
-tmp3 <- read.csv("./Raw data/Retail/01мар14 - 16сен14.csv", header = T, dec = ',', sep = ";")
-# обработка дат
+# Р·Р°РіСЂСѓР·РєР° 3
+tmp3 <- read.csv("./Raw data/Retail/01РјР°СЂ14 - 16СЃРµРЅ14.csv", header = T, dec = ',', sep = ";")
+# РѕР±СЂР°Р±РѕС‚РєР° РґР°С‚
 newnames <- paste0(substr(names(tmp3[,3:ncol(tmp3)]),2,6),'.',"2014")
 names(tmp3) <- c(names(tmp3[,1:2]),newnames)
-names(tmp3)[2] <- "Наименование.товара3"
+names(tmp3)[2] <- "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°3"
 
-# загрузка 4
-tmp4 <- read.csv("./Raw data/Retail/17сен14- 04апр15.csv", header = T, dec = ',', sep = ";")
-# обработка дат
+# Р·Р°РіСЂСѓР·РєР° 4
+tmp4 <- read.csv("./Raw data/Retail/17СЃРµРЅ14- 04Р°РїСЂ15.csv", header = T, dec = ',', sep = ";")
+# РѕР±СЂР°Р±РѕС‚РєР° РґР°С‚
 
-ny <- which(names(tmp4)=="X01.01.01.01107.й.период", arr.ind = T)
+ny <- which(names(tmp4)=="X01.01.01.01107.Р№.РїРµСЂРёРѕРґ", arr.ind = T)
 newnames <- paste0(substr(names(tmp4[,3:(ny-1)]),2,6),'.',"2014")
 newnames2 <- paste0(substr(names(tmp4[,ny:ncol(tmp2)]),2,6),'.',"2015")
 names(tmp4) <- c(names(tmp4[,1:2]),newnames, newnames2)
-names(tmp4)[2] <- "Наименование.товара4"
+names(tmp4)[2] <- "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°4"
 
-# загрузка 5
-tmp5 <- read.csv("./Raw data/Retail/05апр15 - 20окт15.csv", header = T, dec = ',', sep = ";")
-# обработка дат
+# Р·Р°РіСЂСѓР·РєР° 5
+tmp5 <- read.csv("./Raw data/Retail/05Р°РїСЂ15 - 20РѕРєС‚15.csv", header = T, dec = ',', sep = ";")
+# РѕР±СЂР°Р±РѕС‚РєР° РґР°С‚
 newnames <- paste0(substr(names(tmp5[,3:ncol(tmp5)]),2,6),'.',"2015")
 names(tmp5) <- c(names(tmp5[,1:2]),newnames)
-names(tmp5)[2] <- "Наименование.товара5"
+names(tmp5)[2] <- "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°5"
 
-# объединяем все таблицы по ключу "код.товара"
-temp <- merge(tmp1, tmp2, by="Код.товара", all = T)
-temp <- merge(temp, tmp3, by="Код.товара", all = T)
-temp <- merge(temp, tmp4, by="Код.товара", all = T)
-temp <- merge(temp, tmp5, by="Код.товара", all = T)
+# РѕР±СЉРµРґРёРЅСЏРµРј РІСЃРµ С‚Р°Р±Р»РёС†С‹ РїРѕ РєР»СЋС‡Сѓ "РєРѕРґ.С‚РѕРІР°СЂР°"
+temp <- merge(tmp1, tmp2, by="РљРѕРґ.С‚РѕРІР°СЂР°", all = T)
+temp <- merge(temp, tmp3, by="РљРѕРґ.С‚РѕРІР°СЂР°", all = T)
+temp <- merge(temp, tmp4, by="РљРѕРґ.С‚РѕРІР°СЂР°", all = T)
+temp <- merge(temp, tmp5, by="РљРѕРґ.С‚РѕРІР°СЂР°", all = T)
 
 names(temp)
-tt <- grepl(x=names(temp),pattern = "Наименование.товара")
+tt <- grepl(x=names(temp),pattern = "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°")
 head(temp[,tt])
 temp <- cbind(temp[,tt], temp[,!tt])
 
-# 2. Размещает даты в одной колонке: retail ------------------------------------------
+# 2. Р Р°Р·РјРµС‰Р°РµС‚ РґР°С‚С‹ РІ РѕРґРЅРѕР№ РєРѕР»РѕРЅРєРµ: retail ------------------------------------------
 
 tt <- melt(data = temp, id = 1:6, measure = 7:ncol(temp))
-#table(tmp5$Код.товара)
+#table(tmp5$РљРѕРґ.С‚РѕРІР°СЂР°)
 
-# преобразуем дату в класс Date
+# РїСЂРµРѕР±СЂР°Р·СѓРµРј РґР°С‚Сѓ РІ РєР»Р°СЃСЃ Date
 names(tt)[7] <- "date"
 tt$date <- as.Date(tt$date, "%d.%m.%Y")
 retail <- tt
-# проверка контрольной суммы -  17 198 386,70   
+# РїСЂРѕРІРµСЂРєР° РєРѕРЅС‚СЂРѕР»СЊРЅРѕР№ СЃСѓРјРјС‹ -  17 198 386,70   
 sum(retail$value,na.rm = T)
 
-# 3. Из Наименования товара надо вытянуть массу: retail$pack + retail$saleskg ----------------------
+# 3. РР· РќР°РёРјРµРЅРѕРІР°РЅРёСЏ С‚РѕРІР°СЂР° РЅР°РґРѕ РІС‹С‚СЏРЅСѓС‚СЊ РјР°СЃСЃСѓ: retail$pack + retail$saleskg ----------------------
 
 # table(retail[1,1])
-# 1-й парсинг
-temp <- stri_extract_first(str = retail[,1], regex = "(\\d+(,\\d+)?( )?(к|К)?(г|Г))|(\\d+,\\d+)|(\\d+/\\d+(,\\d+))")
-# поиск пропущенных
+# 1-Р№ РїР°СЂСЃРёРЅРі
+temp <- stri_extract_first(str = retail[,1], regex = "(\\d+(,\\d+)?( )?(Рє|Рљ)?(Рі|Р“))|(\\d+,\\d+)|(\\d+/\\d+(,\\d+))")
+# РїРѕРёСЃРє РїСЂРѕРїСѓС‰РµРЅРЅС‹С…
 tt <- temp[temp==""]
 table(tt,useNA="ifany")
 sum(is.na(retail[,1]))
 table(as.character(retail[is.na(temp),1]))
-# удаляем буквы к и г и заменяем , на . и переводим в гр. все
+# СѓРґР°Р»СЏРµРј Р±СѓРєРІС‹ Рє Рё Рі Рё Р·Р°РјРµРЅСЏРµРј , РЅР° . Рё РїРµСЂРµРІРѕРґРёРј РІ РіСЂ. РІСЃРµ
 
 # table(temp)
-kg <- grepl("(кг|,)", temp)
-tmp <- sub(pattern = "(кг|г|Г|\\d{1}/)", temp, replacement = "")
+kg <- grepl("(РєРі|,)", temp)
+tmp <- sub(pattern = "(РєРі|Рі|Р“|\\d{1}/)", temp, replacement = "")
 tmp <- sub(",", ".", tmp)
 table(tmp)
 temp <- as.numeric(tmp)*ifelse(kg,1000,1)
 
-# проверка
+# РїСЂРѕРІРµСЂРєР°
 nrow(retail)==length(temp)
-# добавляем в ритейл новую переменную
+# РґРѕР±Р°РІР»СЏРµРј РІ СЂРёС‚РµР№Р» РЅРѕРІСѓСЋ РїРµСЂРµРјРµРЅРЅСѓСЋ
 retail$pack <- temp
 
-# добавляем продажи в кг.
+# РґРѕР±Р°РІР»СЏРµРј РїСЂРѕРґР°Р¶Рё РІ РєРі.
 retail$saleskg <- retail$value*retail$pack/1000
 
-# финальное преобразование типов столбцов
+# С„РёРЅР°Р»СЊРЅРѕРµ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С‚РёРїРѕРІ СЃС‚РѕР»Р±С†РѕРІ
 retail[,1] <- as.character(retail[,1])
 retail[,2] <- as.character(retail[,2])
 retail[,3] <- as.character(retail[,3])
@@ -103,65 +103,65 @@ retail[,4] <- as.character(retail[,4])
 retail[,5] <- as.character(retail[,5])
 retail[,6] <- as.character(retail[,6])
 
-# смотрим есть ли по выбывшим в первом периоде вернувшиеся в следующих
-i <- 2 # перебор от 2 до 5
-table(as.character(retail[grepl("ыбыл",retail[,1]),i]))
-# результат - нет вернувшихся
+# СЃРјРѕС‚СЂРёРј РµСЃС‚СЊ Р»Рё РїРѕ РІС‹Р±С‹РІС€РёРј РІ РїРµСЂРІРѕРј РїРµСЂРёРѕРґРµ РІРµСЂРЅСѓРІС€РёРµСЃСЏ РІ СЃР»РµРґСѓСЋС‰РёС…
+i <- 2 # РїРµСЂРµР±РѕСЂ РѕС‚ 2 РґРѕ 5
+table(as.character(retail[grepl("С‹Р±С‹Р»",retail[,1]),i]))
+# СЂРµР·СѓР»СЊС‚Р°С‚ - РЅРµС‚ РІРµСЂРЅСѓРІС€РёС…СЃСЏ
 
 
-# 4. Подключение справочника index отгрузки: retail$INDEX ----------------------------------
+# 4. РџРѕРґРєР»СЋС‡РµРЅРёРµ СЃРїСЂР°РІРѕС‡РЅРёРєР° index РѕС‚РіСЂСѓР·РєРё: retail$INDEX ----------------------------------
 
-temp <- read.csv("./Raw data/Retail/Справочник к мороженому.csv", header = T, sep = ";") 
-temp$НОМЕНКЛАТУРА <- as.character(temp$НОМЕНКЛАТУРА)
-tmp <- merge(x=retail, y=temp, by.x = "Наименование.товара1", by.y = 'НОМЕНКЛАТУРА', all.x = T)
-# проверка
+temp <- read.csv("./Raw data/Retail/РЎРїСЂР°РІРѕС‡РЅРёРє Рє РјРѕСЂРѕР¶РµРЅРѕРјСѓ.csv", header = T, sep = ";") 
+temp$РќРћРњР•РќРљР›РђРўРЈР Рђ <- as.character(temp$РќРћРњР•РќРљР›РђРўРЈР Рђ)
+tmp <- merge(x=retail, y=temp, by.x = "РќР°РёРјРµРЅРѕРІР°РЅРёРµ.С‚РѕРІР°СЂР°1", by.y = 'РќРћРњР•РќРљР›РђРўРЈР Рђ', all.x = T)
+# РїСЂРѕРІРµСЂРєР°
 table(tmp$INDEX, useNA = "ifany")
 table(tmp[is.na(tmp$INDEX),1])
 sum(tmp$value, na.rm = T)
 
 retail <- tmp
 
-# 5. Группировка по дате и предвар.анализ: retaildaily ------------------------------------
+# 5. Р“СЂСѓРїРїРёСЂРѕРІРєР° РїРѕ РґР°С‚Рµ Рё РїСЂРµРґРІР°СЂ.Р°РЅР°Р»РёР·: retaildaily ------------------------------------
 temp <- group_by(.data = retail, date)
 tt <- summarise(temp, value=sum(value, na.rm = T), saleskg= sum(saleskg, na.rm = T))
 
-# анализ сгруп. по дате данных
+# Р°РЅР°Р»РёР· СЃРіСЂСѓРї. РїРѕ РґР°С‚Рµ РґР°РЅРЅС‹С…
 summary(tt$saleskg)
-hist(tt$saleskg, xlim = c(0,4000), breaks = 40)  # опять похоже на ф-распределение - асимметр.
-hist(log(tt$saleskg), breaks = 40) # похоже на 2 нормальных, видимо нужен разбивающий их фактор
+hist(tt$saleskg, xlim = c(0,4000), breaks = 40)  # РѕРїСЏС‚СЊ РїРѕС…РѕР¶Рµ РЅР° С„-СЂР°СЃРїСЂРµРґРµР»РµРЅРёРµ - Р°СЃРёРјРјРµС‚СЂ.
+hist(log(tt$saleskg), breaks = 40) # РїРѕС…РѕР¶Рµ РЅР° 2 РЅРѕСЂРјР°Р»СЊРЅС‹С…, РІРёРґРёРјРѕ РЅСѓР¶РµРЅ СЂР°Р·Р±РёРІР°СЋС‰РёР№ РёС… С„Р°РєС‚РѕСЂ
 tt$year <- factor(year(tt$date))
 tt$days <- yday(tt$date)
 tt$wdays <- factor(weekdays(tt$date))
-tt$wend <- factor(ifelse(tt$wdays=="суббота" | tt$wdays=="воскресенье", "yes", "no"))
+tt$wend <- factor(ifelse(tt$wdays=="СЃСѓР±Р±РѕС‚Р°" | tt$wdays=="РІРѕСЃРєСЂРµСЃРµРЅСЊРµ", "yes", "no"))
 tt$season <- season(tt$date)
 retaildaily <- tt
-# проверка
+# РїСЂРѕРІРµСЂРєР° РєРѕРЅС‚СЂРѕР»СЊРЅРѕР№ СЃСѓРјРјС‹ -  17 198 386,70  
 sum(retaildayli$value)
-# сохранение финальных таблиц на диске
+# СЃРѕС…СЂР°РЅРµРЅРёРµ С„РёРЅР°Р»СЊРЅС‹С… С‚Р°Р±Р»РёС† РЅР° РґРёСЃРєРµ
 dput(x = retaildaily, file = "./dump/retaildaily")
-# чтение финальных таблиц с диска
+# С‡С‚РµРЅРёРµ С„РёРЅР°Р»СЊРЅС‹С… С‚Р°Р±Р»РёС† СЃ РґРёСЃРєР°
 retaildayli <- dget(file = "./dump/retaildaily")
 
 ggplot(tt, aes(x=days, y=saleskg)) + geom_line( )+  facet_grid( year ~ .)
 
-# динамика по дням в разбивке по годам
+# РґРёРЅР°РјРёРєР° РїРѕ РґРЅСЏРј РІ СЂР°Р·Р±РёРІРєРµ РїРѕ РіРѕРґР°Рј
 ggplot(tt, aes(x=days, y=saleskg)) + geom_line(stat="identity") + facet_grid( year ~ .)
 
-# по дням недели
+# РїРѕ РґРЅСЏРј РЅРµРґРµР»Рё
 ggplot(tt, aes(x=wdays, y=saleskg)) + geom_histogram(stat="identity") + facet_grid( season ~ .,  scales = "free")
 
-# разобъем цветом диаграммы рассеивания
+# СЂР°Р·РѕР±СЉРµРј С†РІРµС‚РѕРј РґРёР°РіСЂР°РјРјС‹ СЂР°СЃСЃРµРёРІР°РЅРёСЏ
 ggplot(tt, aes(x=saleskg)) + geom_histogram(binwidth=180)+ facet_grid( season ~ .,  scales = "free")
 
 
-# сохранение финальных таблиц на диске -------------------------
+# СЃРѕС…СЂР°РЅРµРЅРёРµ С„РёРЅР°Р»СЊРЅС‹С… С‚Р°Р±Р»РёС† РЅР° РґРёСЃРєРµ -------------------------
 dput(x = retail, file = "./dump/retail")
-# чтение финальных таблиц с диска
+# С‡С‚РµРЅРёРµ С„РёРЅР°Р»СЊРЅС‹С… С‚Р°Р±Р»РёС† СЃ РґРёСЃРєР°
 retail <- dget(file = "./dump/retail")
 
-# Мои функции -------------------------------------------------------------
+# РњРѕРё С„СѓРЅРєС†РёРё -------------------------------------------------------------
 
-# на входе вектор дат, на выходе вектор сезонов фактор
+# РЅР° РІС…РѕРґРµ РІРµРєС‚РѕСЂ РґР°С‚, РЅР° РІС‹С…РѕРґРµ РІРµРєС‚РѕСЂ СЃРµР·РѕРЅРѕРІ С„Р°РєС‚РѕСЂ
 season <- function(x){
   y <- month(x) # month(x) from package  IDateTime
   out <- character(length = length(x))
@@ -172,5 +172,5 @@ season <- function(x){
   out
 }
 
-season(tt$date)
-month(tt$date)
+
+tt 
