@@ -65,6 +65,8 @@ tt <- melt(data = temp, id = 1:6, measure = 7:ncol(temp))
 names(tt)[7] <- "date"
 tt$date <- as.Date(tt$date, "%d.%m.%Y")
 retail <- tt
+# ïğîâåğêà êîíòğîëüíîé ñóììû -  17 198 386,70   
+sum(retail$value,na.rm = T)
 
 # 3. Èç Íàèìåíîâàíèÿ òîâàğà íàäî âûòÿíóòü ìàññó: retail$pack + retail$saleskg ----------------------
 
@@ -101,18 +103,13 @@ retail[,4] <- as.character(retail[,4])
 retail[,5] <- as.character(retail[,5])
 retail[,6] <- as.character(retail[,6])
 
-# ñîõğàíåíèå ôèíàëüíûõ òàáëèö íà äèñêå
-dput(x = retail, file = "./dump/retail")
-# ÷òåíèå ôèíàëüíûõ òàáëèö ñ äèñêà
-retail <- dget(file = "./dump/retail")
-
 # ñìîòğèì åñòü ëè ïî âûáûâøèì â ïåğâîì ïåğèîäå âåğíóâøèåñÿ â ñëåäóşùèõ
 i <- 2 # ïåğåáîğ îò 2 äî 5
 table(as.character(retail[grepl("ûáûë",retail[,1]),i]))
 # ğåçóëüòàò - íåò âåğíóâøèõñÿ
 
 
-# 4. Ïîäêëş÷åíèå ñïğàâî÷íèêà index îòãğóçêè ----------------------------------
+# 4. Ïîäêëş÷åíèå ñïğàâî÷íèêà index îòãğóçêè: retail$INDEX ----------------------------------
 
 temp <- read.csv("./Raw data/Retail/Ñïğàâî÷íèê ê ìîğîæåíîìó.csv", header = T, sep = ";") 
 temp$ÍÎÌÅÍÊËÀÒÓĞÀ <- as.character(temp$ÍÎÌÅÍÊËÀÒÓĞÀ)
@@ -120,10 +117,9 @@ tmp <- merge(x=retail, y=temp, by.x = "Íàèìåíîâàíèå.òîâàğà1", by.y = 'ÍÎÌÅÍÊËÀÒÓ
 # ïğîâåğêà
 table(tmp$INDEX, useNA = "ifany")
 table(tmp[is.na(tmp$INDEX),1])
-grep(pattern = "Ìîğîæ ÒÎÏ 21 êğ-áğ ñ êğèñïè 60ã", x = temp$ÍÎÌÅÍÊËÀÒÓĞÀ)
-grep(pattern = "Ìîğîæ ÒÎÏ 21 êğ-áğ ñ êğèñïè 60ã", x = retail$Íàèìåíîâàíèå.òîâàğà1)
-temp$ÍÎÌÅÍÊËÀÒÓĞÀ[100]
-retail$Íàèìåíîâàíèå.òîâàğà1[107]
+sum(tmp$value, na.rm = T)
+
+retail <- tmp
 
 # 5. Ãğóïïèğîâêà ïî äàòå è ïğåäâàğ.àíàëèç: retaildaily ------------------------------------
 temp <- group_by(.data = retail, date)
@@ -156,6 +152,10 @@ ggplot(tt, aes(x=wdays, y=saleskg)) + geom_histogram(stat="identity") + facet_gr
 ggplot(tt, aes(x=saleskg)) + geom_histogram(binwidth=180)+ facet_grid( season ~ .,  scales = "free")
 
 
+# ñîõğàíåíèå ôèíàëüíûõ òàáëèö íà äèñêå -------------------------
+dput(x = retail, file = "./dump/retail")
+# ÷òåíèå ôèíàëüíûõ òàáëèö ñ äèñêà
+retail <- dget(file = "./dump/retail")
 
 # Ìîè ôóíêöèè -------------------------------------------------------------
 
