@@ -125,7 +125,7 @@ retail <- tmp
 temp <- group_by(.data = retail, date)
 tt <- summarise(temp, value=sum(value, na.rm = T), saleskg= sum(saleskg, na.rm = T))
 
-# анализ сгруп. по дате данных
+# добавление факторов для сгруп. по дате данных
 summary(tt$saleskg)
 hist(tt$saleskg, xlim = c(0,4000), breaks = 40)  # опять похоже на ф-распределение - асимметр.
 hist(log(tt$saleskg), breaks = 40) # похоже на 2 нормальных, видимо нужен разбивающий их фактор
@@ -142,17 +142,10 @@ dput(x = retaildaily, file = "./dump/retaildaily")
 # чтение финальных таблиц с диска
 retaildayli <- dget(file = "./dump/retaildaily")
 
-ggplot(tt, aes(x=days, y=saleskg)) + geom_line( )+  facet_grid( year ~ .)
 
-# динамика по дням в разбивке по годам
-ggplot(tt, aes(x=days, y=saleskg)) + geom_line(stat="identity") + facet_grid( year ~ .)
+# 6. Добавление справочника ITEM и факторов оттуда ------------------------
 
-# по дням недели
-ggplot(tt, aes(x=wdays, y=saleskg)) + geom_histogram(stat="identity") + facet_grid( season ~ .,  scales = "free")
-
-# разобъем цветом диаграммы рассеивания
-ggplot(tt, aes(x=saleskg)) + geom_histogram(binwidth=180)+ facet_grid( season ~ .,  scales = "free")
-
+tt <- subbrand
 
 # сохранение финальных таблиц на диске -------------------------
 dput(x = retail, file = "./dump/retail")
