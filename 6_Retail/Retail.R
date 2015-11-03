@@ -118,11 +118,27 @@ tmp <- merge(x=retail, y=temp, by.x = "Наименование.товара1", 
 table(tmp$INDEX, useNA = "ifany")
 table(tmp[is.na(tmp$INDEX),1])
 sum(tmp$value, na.rm = T)
-
+# удаляем ненужные столбцы Наименование товара и data
+tmp <- tmp[,-c(2:5, 9)]
 retail <- tmp
 
-# 5. Группировка по дате и предвар.анализ: retaildaily ------------------------------------
-temp <- group_by(.data = retail, date)
+# 5. Добавление справочника ITEM и факторов оттуда ------------------------
+# Ритейл торговал такими SKU, которые по данным отгрузок никому не отгружали! (в справочнике ритейла это индексы (91-100)
+
+tt <- merge(x = retail, y = brands[,c(1:3,5)], by.x = "INDEX", by.y = "INDEX", all.x = T, all.y = F)
+# проверка
+table(tt$INDEX, useNA = "ifany")
+table(tt$BRAND, useNA = "ifany")
+table(tt[is.na(tt$BRAND),2]) # все данные с na получены из выбывших позициий
+temp <- tt[!is.na(tt$BRAND),]
+sapply(temp, function(e) sum(is.na(e)))
+
+# проверка контрольной суммы -  17 198 386,70   
+sum(tt$value,na.rm = T)
+retail <- tt
+
+# 6. Группировка по дате и предвар.анализ: retaildaily ------------------------------------
+temp <- group_by(.data = retail, date, impuls)
 tt <- summarise(temp, value=sum(value, na.rm = T), saleskg= sum(saleskg, na.rm = T))
 
 # добавление факторов для сгруп. по дате данных
@@ -134,18 +150,16 @@ tt$days <- yday(tt$date)
 tt$wdays <- factor(weekdays(tt$date))
 tt$wend <- factor(ifelse(tt$wdays=="суббота" | tt$wdays=="воскресенье", "yes", "no"))
 tt$season <- season(tt$date)
-retaildaily <- tt
+
 # проверка контрольной суммы -  17 198 386,70  
-sum(retaildayli$value)
+sum(tt$value)
+retaildaily <- as.data.frame(tt)
+
 # сохранение финальных таблиц на диске
 dput(x = retaildaily, file = "./dump/retaildaily")
 # чтение финальных таблиц с диска
 retaildayli <- dget(file = "./dump/retaildaily")
 
-
-# 6. Добавление справочника ITEM и факторов оттуда ------------------------
-
-tt <- subbrand
 
 # сохранение финальных таблиц на диске -------------------------
 dput(x = retail, file = "./dump/retail")
