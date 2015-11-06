@@ -1,6 +1,6 @@
 # исходный файл морож 13-15.xlsx был преобразован в excel (удалены промежуточные итоги и лишние строки и столбцы)
 # см. морож 13-15._tidy_step1.xlsx, далее все 5 листов были экспортированы в файлы csv
-
+# контрольная сумма -  17 198 386,70
 
 # 1. Загрузка и предобработка данных  ------------------------------------------
 
@@ -137,7 +137,25 @@ sapply(temp, function(e) sum(is.na(e)))
 sum(tt$value,na.rm = T)
 retail <- tt
 
-# 6. Группировка по дате и предвар.анализ: retaildaily ------------------------------------
+
+# 6. Анализ нулевых брендов retail --------------------------------------------------
+tmp <- tapply(retail$saleskg, retail$Наименование.товара1, function(e) sum(e, na.rm = T))
+tmp[tmp==0]
+length(tmp[tmp==0]) # n=109
+length(tmp) # n=274
+summary(tmp[tmp>0])
+names(tmp[tmp==0])
+# удаляем бренды с нулевыми суммами
+temp <- retail[!(retail$Наименование.товара1 %in% names(tmp[tmp==0])),]
+# контроль
+sum(temp$value) # ок
+retail <- temp
+
+# 7. Анализ NA значений retail ------------------------------------------
+sapply(retail, function(e) sum(is.na(e)))
+# вывод - нет пропущенных значен
+
+# 8. Группировка по дате и предвар.анализ: retaildaily ------------------------------------
 temp <- group_by(.data = retail, date, impuls)
 tt <- summarise(temp, value=sum(value, na.rm = T), saleskg= sum(saleskg, na.rm = T))
 
@@ -150,6 +168,9 @@ tt$days <- yday(tt$date)
 tt$wdays <- factor(weekdays(tt$date))
 tt$wend <- factor(ifelse(tt$wdays=="суббота" | tt$wdays=="воскресенье", "yes", "no"))
 tt$season <- season(tt$date)
+
+# пропущенные значения
+sapply(tt, function(e) sum(is.na(e)))
 
 # проверка контрольной суммы -  17 198 386,70  
 sum(tt$value)
@@ -169,6 +190,7 @@ retail <- dget(file = "./dump/retail")
 # Мои функции -------------------------------------------------------------
 
 # на входе вектор дат, на выходе вектор сезонов фактор
+
 season <- function(x){
   y <- month(x) # month(x) from package  IDateTime
   out <- character(length = length(x))
