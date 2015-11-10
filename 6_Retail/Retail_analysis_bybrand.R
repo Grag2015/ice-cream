@@ -19,6 +19,12 @@ checkna(retaildaily_b) # по 20 NA в каждом бренде - это из �
 retaildaily_b <- retaildaily_b[!is.na(retaildaily_b$clowdly),]
 sum(retaildaily_b$saleskg) #1159474 - ок
 
+# добавляем ветер (скор и направл), влажность, давление из перем. weather2
+temp <- merge(x=retaildaily_b, y=weather2[,c("winds", "windd", "humidity", "ppp", "date")], 
+              by.x = "date", by.y = "date", all.x = T, all.y = F)
+sum(retaildaily_b$saleskg)==sum(temp$saleskg)
+retaildaily_b <- temp
+
 # визуальный осмотр ----------------
 temp <- retaildaily_b[retaildaily_b$saleskg<500,]
 ggplot(temp, aes(x=saleskg, col=BRAND)) + geom_density() +facet_grid(season~., scales = "free")
