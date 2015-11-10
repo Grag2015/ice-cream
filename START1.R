@@ -92,3 +92,15 @@ outliers.rm <- function(x, log=F){
   ifelse(log, rez <- !x<mx, rez <- x[x<mx])
   rez
 }
+
+# на входе вектор дат, на выходе вектор сезонов фактор
+
+season <- function(x){
+  y <- month(x) # month(x) from package  lubridate
+  out <- character(length = length(x))
+  out[y>2 & y<6] <- "spring"
+  out[y>5 & y<9] <- "summer"
+  out[y>8 & y<12] <- "autumn"
+  out[y>11 | y<3] <- "winter"
+  out
+}
