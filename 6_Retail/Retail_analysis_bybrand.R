@@ -309,3 +309,6 @@ sd(fit$residuals)/mean(tmpseason$saleskg)
 dput(x = retaildaily_b, file = "./dump/retaildaily_b")
 # чтение финальных таблиц с диска
 retaildaily_b <- dget(file = "./dump/retaildaily_b")
+
+# готовил данные для отчета rmd
+dput(x = retaildaily_b[,c(1,2,4)], file = "./dump/retailtidy")
