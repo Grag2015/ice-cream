@@ -1,22 +1,42 @@
 ---
 output: html_document
 ---
+
+
 # Многофакторная линейная регрессионная модель зависимости продаж мороженного от погоды
 
 
-## Аннотация 
-В отчете исследована зависимость продаж мороженного (т.н. "импульсного" в упаковках до 200г) 
-от метеорологических факторов - температуры, влажности, давления, ветра.
+## Содержание
+1. Аннотация
+2. Подготовка данных
+3. Разведочный анализ
+4. Построение модели
+4.1. ТОП лето
+4.2 ТОП весна
+5. Выводы
+
+## 1. Аннотация 
+В отчете исследована зависимость продаж мороженного (т.н. "импульсного" в упаковках до 200гр.) 
+от метеорологических факторов - температуры, влажности, давления, скорости ветра.
 В целом можно сказать, что погода значительно влияет на продажи, при этом летом
 это влияние не так заметно, гораздо заметнее связь в межсезонье, зимой связь 
 совсем слабая. Также хочется отметить, что основным фактором с подавляющим 
 перевесом является температура воздуха, остальные факторы влияют гораздо 
-менее значимо, но усложняют модель.
+менее значимо, например летом дополнительное влияние оказывают влажность и давление,
+а весной или осенью - скорость ветра и облачность. Однако, усложнение модели
+с введением этих факторов не оправдано по причине их низкой значимости.
 
-тут таблица с результатами по сезонам.
+Таблица с параметрами моделей по сезонам.
 
-## Подготовка данных
-включаем нужные библиотеки
+Бренд | Сезон | Adj R-squared | Основной предиктор | Дополнительные предикторы
+------------- | ------------- | ------------- | ------------- | ------------- 
+ТОП | Лето  | 0.43  | tem | humifity, ppp 
+ТОП | Весна  | 0.66  | tem | winds, clowdly 
+ТОП | Осень  | 0.64  | tem | winds, clowdly
+ТОП | Зима  | 0.13  | tem |  -
+
+## 2. Подготовка данных
+Подключаем нужные библиотеки
 
 ```r
 library("dplyr")
@@ -46,23 +66,66 @@ retweattop <- retweat[retweat$BRAND=="ТОП",]
 ```
 в дальнейшем работаем с датасетом `retweattop`
 
-## Разведочный анализ
+## 3. Разведочный анализ
 предварительный анализ показал, что характер зависимости продаж от погоды 
 значительно различается для различных времен года. смотрите для примера характер
-зависимости продаж от температуры воздуха (обратите внимание на различие шкал)
-
+зависимости продаж от температуры воздуха (обратите внимание на различие шкал).
+Поэтому было принято решение строить отдельные модели для различных времен 
+года для каждого из брендов (Топ, Юкки и Soletto)
 
 ```r
 xyplot(saleskg~tem|season, data = retweattop, layout = c(1, 4), scales 
             = "free", breaks = 50)
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
-поэтому было принято решение строить отдельные модели для различных времен года
-для каждого из брендов (Топ, Юкки и Soletto)
 
-## 1. Бренд: ТОП, сезон: ЛЕТО
+Далее, посмотрим, как взаимосвязаны различные параметры в датасете.
+
+3.1. Диаграмма рассеивания Влажность ~ Температура, цветом обозначены уровни облачности  
+
+```r
+ggplot(data = retweat, aes(x = tem, y=humidity, col=clowdlyf)) + geom_point()+
+  xlab("Температура воздуха")+ylab("Влажность")
+```
+
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+
+3.2. Боксплот Температура ~ Направление ветра    
+
+```r
+ggplot(data = retweat, aes(x = windd, y=tem)) + geom_boxplot()+
+  xlab("Направление ветра")+ylab("Температура")
+```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+
+3.3. Диаграмма рассеивания Давление ~ Температура, цветом обозначены направления ветра  
+
+```r
+ggplot(data = retweat, aes(x = tem, y=ppp, col=windd)) + geom_point()+
+  xlab("Температура воздуха")+ylab("Давление")
+```
+
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
+
+3.4. Диаграмма рассеивания Давление ~ Влажность, цветом обозначены уровни температуры  
+
+```r
+ggplot(data = retweat, aes(x = humidity, y=ppp, col=tem)) + geom_point()+
+xlab("Влажность воздуха")+ylab("Давление")
+```
+
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
+
+как показывает разведочный анализ, нет сильно-выраженных зависимостей между
+метеорологическими показателями, поэтому все их будем включать в регрессионный анализ.
+
+**Вывод:** на основании предварительного анализа принято решение строить модели 
+отдельно для каждого бренда используя все возможные предикторы.
+
+## 4.1 Построение модели - бренд: ТОП, сезон: ЛЕТО
 
 
 ```r
@@ -83,29 +146,29 @@ ideal_model <- step(object = model_full, scope = list(lower = model_null, upper 
 Результат для наилучшей модели `ideal-model`
 
 ```
-## Residual standard error: 224.2 on 261 degrees of freedom
-## Multiple R-squared:   0.4055 Adjusted R-squared:   0.3736
-## F-statistic:  12.72 on 14 and 261 DF,  p-value: < 2.22e-16
+## Residual standard error: 223.7 on 261 degrees of freedom
+## Multiple R-squared:   0.4083 Adjusted R-squared:   0.3766
+## F-statistic:  12.87 on 14 and 261 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 14:00:55 2015 -->
+<!-- Tue Nov 24 00:28:10 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
-  <tr> <td align="right"> (Intercept) </td> <td align="right"> -289913.0004 </td> <td align="right"> 73269.3595 </td> <td align="right"> -3.96 </td> <td align="right"> 0.0001 </td> </tr>
-  <tr> <td align="right"> I(tem^2) </td> <td align="right"> 3.2804 </td> <td align="right"> 1.1098 </td> <td align="right"> 2.96 </td> <td align="right"> 0.0034 </td> </tr>
-  <tr> <td align="right"> tem </td> <td align="right"> 15284.0369 </td> <td align="right"> 3442.0792 </td> <td align="right"> 4.44 </td> <td align="right"> 0.0000 </td> </tr>
-  <tr> <td align="right"> clowdly </td> <td align="right"> -69.7680 </td> <td align="right"> 33.5340 </td> <td align="right"> -2.08 </td> <td align="right"> 0.0385 </td> </tr>
-  <tr> <td align="right"> winds </td> <td align="right"> 74446.7341 </td> <td align="right"> 28808.9290 </td> <td align="right"> 2.58 </td> <td align="right"> 0.0103 </td> </tr>
-  <tr> <td align="right"> humidity </td> <td align="right"> 3103.4262 </td> <td align="right"> 1018.9854 </td> <td align="right"> 3.05 </td> <td align="right"> 0.0026 </td> </tr>
-  <tr> <td align="right"> ppp </td> <td align="right"> 288.7620 </td> <td align="right"> 72.4160 </td> <td align="right"> 3.99 </td> <td align="right"> 0.0001 </td> </tr>
-  <tr> <td align="right"> tem:winds </td> <td align="right"> -3670.2337 </td> <td align="right"> 1351.4018 </td> <td align="right"> -2.72 </td> <td align="right"> 0.0071 </td> </tr>
-  <tr> <td align="right"> tem:humidity </td> <td align="right"> -177.9380 </td> <td align="right"> 51.8440 </td> <td align="right"> -3.43 </td> <td align="right"> 0.0007 </td> </tr>
-  <tr> <td align="right"> clowdly:humidity </td> <td align="right"> 1.2554 </td> <td align="right"> 0.6838 </td> <td align="right"> 1.84 </td> <td align="right"> 0.0675 </td> </tr>
-  <tr> <td align="right"> tem:ppp </td> <td align="right"> -15.2381 </td> <td align="right"> 3.4035 </td> <td align="right"> -4.48 </td> <td align="right"> 0.0000 </td> </tr>
-  <tr> <td align="right"> winds:ppp </td> <td align="right"> -73.5951 </td> <td align="right"> 28.4548 </td> <td align="right"> -2.59 </td> <td align="right"> 0.0102 </td> </tr>
-  <tr> <td align="right"> humidity:ppp </td> <td align="right"> -3.0906 </td> <td align="right"> 1.0072 </td> <td align="right"> -3.07 </td> <td align="right"> 0.0024 </td> </tr>
-  <tr> <td align="right"> tem:winds:ppp </td> <td align="right"> 3.6262 </td> <td align="right"> 1.3339 </td> <td align="right"> 2.72 </td> <td align="right"> 0.0070 </td> </tr>
-  <tr> <td align="right"> tem:humidity:ppp </td> <td align="right"> 0.1767 </td> <td align="right"> 0.0512 </td> <td align="right"> 3.45 </td> <td align="right"> 0.0007 </td> </tr>
+  <tr> <td align="right"> (Intercept) </td> <td align="right"> -281948.4356 </td> <td align="right"> 71120.7431 </td> <td align="right"> -3.96 </td> <td align="right"> 0.0001 </td> </tr>
+  <tr> <td align="right"> I(tem^2) </td> <td align="right"> 3.2647 </td> <td align="right"> 1.1122 </td> <td align="right"> 2.94 </td> <td align="right"> 0.0036 </td> </tr>
+  <tr> <td align="right"> tem </td> <td align="right"> 15010.7442 </td> <td align="right"> 3343.0715 </td> <td align="right"> 4.49 </td> <td align="right"> 0.0000 </td> </tr>
+  <tr> <td align="right"> clowdly </td> <td align="right"> -73.3839 </td> <td align="right"> 33.9305 </td> <td align="right"> -2.16 </td> <td align="right"> 0.0315 </td> </tr>
+  <tr> <td align="right"> winds </td> <td align="right"> 64291.2917 </td> <td align="right"> 25154.7789 </td> <td align="right"> 2.56 </td> <td align="right"> 0.0112 </td> </tr>
+  <tr> <td align="right"> humidity </td> <td align="right"> 3337.7939 </td> <td align="right"> 1030.4499 </td> <td align="right"> 3.24 </td> <td align="right"> 0.0014 </td> </tr>
+  <tr> <td align="right"> ppp </td> <td align="right"> 280.9210 </td> <td align="right"> 70.3252 </td> <td align="right"> 3.99 </td> <td align="right"> 0.0001 </td> </tr>
+  <tr> <td align="right"> tem:winds </td> <td align="right"> -3274.7395 </td> <td align="right"> 1186.1410 </td> <td align="right"> -2.76 </td> <td align="right"> 0.0062 </td> </tr>
+  <tr> <td align="right"> tem:humidity </td> <td align="right"> -188.6255 </td> <td align="right"> 52.5078 </td> <td align="right"> -3.59 </td> <td align="right"> 0.0004 </td> </tr>
+  <tr> <td align="right"> clowdly:humidity </td> <td align="right"> 1.3585 </td> <td align="right"> 0.6952 </td> <td align="right"> 1.95 </td> <td align="right"> 0.0517 </td> </tr>
+  <tr> <td align="right"> tem:ppp </td> <td align="right"> -14.9668 </td> <td align="right"> 3.3073 </td> <td align="right"> -4.53 </td> <td align="right"> 0.0000 </td> </tr>
+  <tr> <td align="right"> winds:ppp </td> <td align="right"> -63.5383 </td> <td align="right"> 24.8338 </td> <td align="right"> -2.56 </td> <td align="right"> 0.0111 </td> </tr>
+  <tr> <td align="right"> humidity:ppp </td> <td align="right"> -3.3237 </td> <td align="right"> 1.0190 </td> <td align="right"> -3.26 </td> <td align="right"> 0.0013 </td> </tr>
+  <tr> <td align="right"> tem:winds:ppp </td> <td align="right"> 3.2341 </td> <td align="right"> 1.1703 </td> <td align="right"> 2.76 </td> <td align="right"> 0.0061 </td> </tr>
+  <tr> <td align="right"> tem:humidity:ppp </td> <td align="right"> 0.1873 </td> <td align="right"> 0.0519 </td> <td align="right"> 3.61 </td> <td align="right"> 0.0004 </td> </tr>
    </table>
              
 
@@ -118,11 +181,11 @@ xt <- anova(model_full, ideal_model)
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 14:00:55 2015 -->
+<!-- Tue Nov 24 00:28:10 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Res.Df </th> <th> RSS </th> <th> Df </th> <th> Sum of Sq </th> <th> F </th> <th> Pr(&gt;F) </th>  </tr>
-  <tr> <td> 1 </td> <td align="right"> 243 </td> <td align="right"> 12712025.38 </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> </tr>
-  <tr> <td> 2 </td> <td align="right"> 261 </td> <td align="right"> 13124748.54 </td> <td align="right"> -18 </td> <td align="right"> -412723.16 </td> <td align="right"> 0.44 </td> <td align="right"> 0.9784 </td> </tr>
+  <tr> <td> 1 </td> <td align="right"> 243 </td> <td align="right"> 12606436.21 </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> </tr>
+  <tr> <td> 2 </td> <td align="right"> 261 </td> <td align="right"> 13061934.90 </td> <td align="right"> -18 </td> <td align="right"> -455498.70 </td> <td align="right"> 0.49 </td> <td align="right"> 0.9619 </td> </tr>
    </table>
 
 ##
@@ -139,7 +202,7 @@ fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason)
 ## F-statistic:  20.94 on 8 and 267 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 14:00:55 2015 -->
+<!-- Tue Nov 24 00:28:10 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -705.0332 </td> <td align="right"> 281.9774 </td> <td align="right"> -2.50 </td> <td align="right"> 0.0130 </td> </tr>
@@ -153,7 +216,7 @@ fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason)
   <tr> <td align="right"> tem:humidity:ppp </td> <td align="right"> 0.0007 </td> <td align="right"> 0.0002 </td> <td align="right"> 2.93 </td> <td align="right"> 0.0037 </td> </tr>
    </table>
 
-### Проверка модели
+### Проверка модели (подобранной вручную)
 
 1.1 нормальность остатков (тест Шапиро-Вилка)
 
@@ -176,7 +239,7 @@ qqPlot(fit, labels=row.names(tmpseason), id.method="identify",
        simulate=TRUE, main="Q-Q Plot")
 ```
 
-![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png) 
+![plot of chunk unnamed-chunk-23](figure/unnamed-chunk-23-1.png) 
 
 2. независимость остатков (тест Дарбина-Уотсона)
 
@@ -189,7 +252,7 @@ cat(ifelse(test2$p < 0.05, "Есть зависимость", "Нет завис
 ```
 
 ```
-## Нет зависимости , p-значение:  0.058
+## Есть зависимость , p-значение:  0.046
 ```
 
 3.1 гомоскедастичность остатков
@@ -212,7 +275,7 @@ cat(ifelse(test3$p < 0.05, "Гомоскедастичность НЕ выпол
 spreadLevelPlot(fit)
 ```
 
-![plot of chunk unnamed-chunk-23](figure/unnamed-chunk-23-1.png) 
+![plot of chunk unnamed-chunk-28](figure/unnamed-chunk-28-1.png) 
 
 ##  
 **Вывод:** можно сказать что модель соответствует требованиям, те небольшие 
@@ -220,18 +283,44 @@ spreadLevelPlot(fit)
 
 
 ### Подгонка модели
-Этап подгонки подели подробно не расписывал. Если кратко выбросы находил с помощью
-теста Бонферони, расчета метрики Кука для поиска влиятельных значений, а также 
-визуально на графиках, но как правило удалял немного - около 4-7 наблюдений.
+Схема этапа подгонки - выбросы находил с помощью теста Бонферони, 
+и расчета метрики Кука для поиска влиятельных значений, реже 
+визуально на графиках, (как правило удалял немного - около 4-7 наблюдений.)
+Также на этапе подгонки, в случае невыполнения требования гомоскедастичности или 
+нормальности, рассчитываются показатели степени для преобразования зависимой 
+переменной (используются функции spreadLevelPlot и powerTransform соответственно)
+
+Итак, ищем выбросы с помощью теста Бонферони 
+
+```r
+tt <- outlierTest(fit)
+outn <- which(row.names(tmpseason)==names(tt$p), arr.ind = T)
+tmpseason <- tmpseason[-c(outn),]
+```
+Пересчитаем параметры модели после удаления выбросов
+
+```r
+fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason) 
+```
 
 
+
+Тест  | Результат исходный | Результат после удаления выбросов
+------------- | ------------- | -------------
+Нормальность остатков  | 0.047 `(NO)` |  0.294 `(YES)`
+Независимость остатков  | 0.046 `(NO)` | 0.066 `(YES)`
+Гомоскедастичность остатков | 0.179  `(YES)` | 0.142 `(YES)`
 
 
 ## Визуализация результатов
+
+
+
+
 Кривая зависимости продаж от температуры при различных комбинациях давления и влажности
 
 
-![plot of chunk unnamed-chunk-26](figure/unnamed-chunk-26-1.png) 
+![plot of chunk unnamed-chunk-34](figure/unnamed-chunk-34-1.png) 
 
 ##  
 **Вывод:** На данном графике хочется отметить (см. верхний), что при повышенном 
@@ -244,7 +333,7 @@ spreadLevelPlot(fit)
 Далее, рассмотрим еще модель для бренда ТОП для весны, будем смотреть зависимость
 только от температуры.
 
-## 1. Бренд: ТОП, сезон: ВЕСНА
+## 4.2 Построение модели - бренд: ТОП, сезон: ВЕСНА
 
 
 ```r
@@ -265,7 +354,7 @@ fit <- lm(saleskg^(1/3) ~ tem+I(tem^2), data = tmpseason)
 ## F-statistic:  269.52 on 2 and 273 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 14:00:57 2015 -->
+<!-- Tue Nov 24 00:28:12 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> 4.3871 </td> <td align="right"> 0.0971 </td> <td align="right"> 45.19 </td> <td align="right"> 0.0000 </td> </tr>
@@ -293,7 +382,7 @@ test1 <- shapiro.test(fit$residuals)
 ```
 
 1.2 визуальная оценка нормальности остатков (QQ-plot)
-![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-1.png) 
+![plot of chunk unnamed-chunk-40](figure/unnamed-chunk-40-1.png) 
 
 2. независимость остатков (тест Дарбина-Уотсона)
 
@@ -321,7 +410,7 @@ test3 <- ncvTest(fit)
 spreadLevelPlot(fit)
 ```
 
-![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-37-1.png) 
+![plot of chunk unnamed-chunk-45](figure/unnamed-chunk-45-1.png) 
 
 ## 
 **Вывод:** есть значительные отклонения от требования, подгонка модели не помогла
@@ -338,11 +427,11 @@ spreadLevelPlot(fit)
 ```r
 ggplot(data = tmpseason, aes(x=tem, y=saleskg))  + geom_point(col="grey", size=4,  alpha = 1/2) + 
   geom_line(aes(x = tem, y = (fit$fitted.values)^3), col = 'blue', lwd=1)+
-  geom_line(aes(x = tem, y = (fit$fitted.values)^3+1.6*sd((fit$residuals)^3)), col = 'red',  linetype = 3)+
-  geom_line(aes(x = tem, y = (fit$fitted.values)^3-1.6*sd((fit$residuals)^3)), col = 'red',  linetype = 3)
+  geom_line(aes(x = tem, y = (fit$fitted.values+1.645*sd(fit$residuals))^3), col = 'red',  linetype = 3)+
+  geom_line(aes(x = tem, y = (fit$fitted.values-1.645*sd(fit$residuals))^3), col = 'red',  linetype = 3)+xlab("Температура воздуха (градусов Цельсия)")+ylab("Продажи суточные (кг)")
 ```
 
-![plot of chunk unnamed-chunk-38](figure/unnamed-chunk-38-1.png) 
+![plot of chunk unnamed-chunk-46](figure/unnamed-chunk-46-1.png) 
 
 ## Общий вывод
 В целом можно сказать, что погода значительно влияет на продажи, при этом летом
@@ -351,15 +440,5 @@ ggplot(data = tmpseason, aes(x=tem, y=saleskg))  + geom_point(col="grey", size=4
 перевесом является температура воздуха, остальные факторы влияют гораздо 
 менее значимо, но усложняют модель.
 
-
-```
-## 
-## 
-## processing file: Analys_Sales_Weather_TOP.Rmd
-```
-
-```
-## Error in parse_block(g[-1], g[1], params.src): duplicate label 'topspring'
-```
 
 
