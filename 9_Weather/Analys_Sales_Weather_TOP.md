@@ -88,7 +88,7 @@ ideal_model <- step(object = model_full, scope = list(lower = model_null, upper 
 ## F-statistic:  12.72 on 14 and 261 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 13:50:42 2015 -->
+<!-- Mon Nov 23 13:58:09 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -289913.0004 </td> <td align="right"> 73269.3595 </td> <td align="right"> -3.96 </td> <td align="right"> 0.0001 </td> </tr>
@@ -118,7 +118,7 @@ xt <- anova(model_full, ideal_model)
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 13:50:42 2015 -->
+<!-- Mon Nov 23 13:58:09 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Res.Df </th> <th> RSS </th> <th> Df </th> <th> Sum of Sq </th> <th> F </th> <th> Pr(&gt;F) </th>  </tr>
   <tr> <td> 1 </td> <td align="right"> 243 </td> <td align="right"> 12712025.38 </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> </tr>
@@ -139,7 +139,7 @@ fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason)
 ## F-statistic:  20.94 on 8 and 267 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 13:50:42 2015 -->
+<!-- Mon Nov 23 13:58:09 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -705.0332 </td> <td align="right"> 281.9774 </td> <td align="right"> -2.50 </td> <td align="right"> 0.0130 </td> </tr>
@@ -189,7 +189,7 @@ cat(ifelse(test2$p < 0.05, "Есть зависимость", "Нет завис
 ```
 
 ```
-## Нет зависимости , p-значение:  0.05
+## Есть зависимость , p-значение:  0.04
 ```
 
 3.1 гомоскедастичность остатков
@@ -265,7 +265,7 @@ fit <- lm(saleskg^(1/3) ~ tem+I(tem^2), data = tmpseason)
 ## F-statistic:  269.52 on 2 and 273 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Mon Nov 23 13:50:43 2015 -->
+<!-- Mon Nov 23 13:58:10 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> 4.3871 </td> <td align="right"> 0.0971 </td> <td align="right"> 45.19 </td> <td align="right"> 0.0000 </td> </tr>
@@ -302,7 +302,7 @@ test2 <- durbinWatsonTest(fit)
 ```
 
 ```
-## Есть зависимость , p-значение:  0.002
+## Есть зависимость , p-значение:  0.004
 ```
 
 3.1 гомоскедастичность остатков
@@ -350,5 +350,16 @@ ggplot(data = tmpseason, aes(x=tem, y=saleskg))  + geom_point(col="grey", size=4
 совсем слабая. Также хочется отметить, что основным фактором с подавляющим 
 перевесом является температура воздуха, остальные факторы влияют гораздо 
 менее значимо, но усложняют модель.
+
+
+```
+## 
+## 
+## processing file: Analys_Sales_Weather_TOP.Rmd
+```
+
+```
+## Error in parse_block(g[-1], g[1], params.src): duplicate label 'topspring'
+```
 
 
