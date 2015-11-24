@@ -7,8 +7,8 @@
 * Как влияют на продажи другие метеорологические показатели - влажность воздуха, атмосферное давление, скорость и направление ветра?
 
 **Исходные данные**  
-1. данные о ежедневных продажах мороженного в торговой сети (11% всей продукции) за период 2013-2015 гг. Более подробной информации пока в данном хранилище нет.
-2. данные о погоде были получены с сайта pogoda.by. Более подробно о параметрах данных и их обработке в документе [Preproc-weather.html] (https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Preproc-weather.html)
+1. данные о ежедневных продажах мороженного в торговой сети (11% всей продукции) за период 2013-2015 гг. Более подробной информации пока в данном хранилище нет.  
+2. данные о погоде были получены с сайта pogoda.by. Более подробно о параметрах данных и их обработке в документе [Preproc-weather.html] (https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Preproc-weather.md)
 
 **Инструменты и методы анализа**
 Для поиска характера и силы взаимосвязи используем многофакторную линейную регрессионную модель с возможным  степенным преобразованием зависимой переменной или предикторов.
@@ -20,9 +20,9 @@
 
 
 **Основные файлы**
-* [Preproc-weather.html](https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Preproc-weather.html)
+* [Preproc-weather.md](https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Preproc-weather.md)
 файл с комментариями и кодом, для воспроизведения подготовки данных о погоде
-* [Analys_Sales_Weather_TOP.html](https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Analys_Sales_Weather_TOP.html)
+* [Analys_Sales_Weather_TOP.md](https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Preproc-weather.md)
 файл с комментариями и кодом, для воспроизведения анализа зависимости Продажи~Погода
 * [weathertidy](https://github.com/Grag2015/ice-cream/blob/master/9_Weather/weathertidy)
 Обработанные данные о погоде
@@ -36,7 +36,7 @@
 4. Разведочный анализ полученных данных  
 5. Создание выборки данных для каждого из брендов (Юкки, Топ, Soletto)  
 6. Анализ для каждого бренда  
-Более подробно п.п. 1-5 описаны в отчете "Preproc-weather.html", п.6 описан отдельно для каждого бренда в соответствующих файлах: 
-* Analys_Sales_Weather_TOP.html (есть лето и весна)
+Более подробно п.п. 1-5 описаны в отчете "Preproc-weather.md" (см. "Основные файлы"), п.6 описан отдельно для каждого бренда в соответствующих файлах: 
+* Analys_Sales_Weather_TOP.md (см. "Основные файлы", есть лето и весна)
 * Analys_Sales_Weather_Yukki.html (не готов)
 * Analys_Sales_Weather_Soletto.html (не готов)
