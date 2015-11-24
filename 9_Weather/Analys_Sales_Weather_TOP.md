@@ -1,5 +1,6 @@
+## Многофакторная линейная регрессионная модель зависимости продаж мороженного от погоды
+
 ---
-title: "Многофакторная линейная регрессионная модель зависимости продаж мороженного от погоды"
 author: "Grigory Miholap"
 date: "15/11/2015"
 ---
@@ -162,7 +163,7 @@ ideal_model <- step(object = model_full, scope = list(lower = model_null, upper 
 ## F-statistic:  12.87 on 14 and 261 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:39:27 2015 -->
+<!-- Tue Nov 24 17:45:28 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -281948.4356 </td> <td align="right"> 71120.7431 </td> <td align="right"> -3.96 </td> <td align="right"> 0.0001 </td> </tr>
@@ -192,7 +193,7 @@ xt <- anova(model_full, ideal_model)
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:39:28 2015 -->
+<!-- Tue Nov 24 17:45:28 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Res.Df </th> <th> RSS </th> <th> Df </th> <th> Sum of Sq </th> <th> F </th> <th> Pr(&gt;F) </th>  </tr>
   <tr> <td> 1 </td> <td align="right"> 243 </td> <td align="right"> 12606436.21 </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> </tr>
@@ -213,7 +214,7 @@ fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason)
 ## F-statistic:  20.94 on 8 and 267 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:39:28 2015 -->
+<!-- Tue Nov 24 17:45:28 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -705.0332 </td> <td align="right"> 281.9774 </td> <td align="right"> -2.50 </td> <td align="right"> 0.0130 </td> </tr>
@@ -263,7 +264,7 @@ cat(ifelse(test2$p < 0.05, "Есть зависимость", "Нет завис
 ```
 
 ```
-## Нет зависимости , p-значение:  0.062
+## Есть зависимость , p-значение:  0.044
 ```
 
 3.1 гомоскедастичность остатков
@@ -320,7 +321,7 @@ fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason)
 Тест  | Результат исходный | Результат после удаления выбросов
 ------------- | ------------- | -------------
 Нормальность остатков  | 0.047 `(NO)` |  0.294 `(YES)`
-Независимость остатков  | 0.062 `(NO)` | 0.064 `(YES)`
+Независимость остатков  | 0.044 `(NO)` | 0.068 `(YES)`
 Гомоскедастичность остатков | 0.179  `(YES)` | 0.142 `(YES)`
 
 ## Аналитическая запись зависимости
@@ -370,7 +371,7 @@ fit <- lm(saleskg^(1/3) ~ tem+I(tem^2), data = tmpseason)
 ## F-statistic:  269.52 on 2 and 273 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:39:29 2015 -->
+<!-- Tue Nov 24 17:45:29 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> 4.3871 </td> <td align="right"> 0.0971 </td> <td align="right"> 45.19 </td> <td align="right"> 0.0000 </td> </tr>
@@ -454,7 +455,7 @@ fit <- lm(saleskg^(1/3) ~ tem+I(tem^2), data = tmpseason)
 Тест  | Результат исходный | Результат после удаления выбросов
 ------------- | ------------- | -------------
 Нормальность остатков  | 10<sup>-4</sup> `(NO)` |  0.0048 `(NO)`
-Независимость остатков  | 0.004 `(NO)` | 0.002 `(NO)`
+Независимость остатков  | 0.004 `(NO)` | 0.008 `(NO)`
 Гомоскедастичность остатков | 0  `(NO)` | 0 `(NO)`
 
 подгонка модели не помогла полностью привести модель в соответствие с требованиями.
