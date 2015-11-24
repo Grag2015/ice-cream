@@ -1,9 +1,11 @@
 ---
-output: html_document
+title: "Многофакторная линейная регрессионная модель зависимости продаж мороженного от погоды"
+author: "Grigory Miholap"
+date: "15/11/2015"
 ---
 
 
-# Многофакторная линейная регрессионная модель зависимости продаж мороженного от погоды
+
 
 
 ## Содержание
@@ -160,7 +162,7 @@ ideal_model <- step(object = model_full, scope = list(lower = model_null, upper 
 ## F-statistic:  12.87 on 14 and 261 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:01:15 2015 -->
+<!-- Tue Nov 24 17:39:27 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -281948.4356 </td> <td align="right"> 71120.7431 </td> <td align="right"> -3.96 </td> <td align="right"> 0.0001 </td> </tr>
@@ -190,7 +192,7 @@ xt <- anova(model_full, ideal_model)
 ```
 
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:01:15 2015 -->
+<!-- Tue Nov 24 17:39:28 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Res.Df </th> <th> RSS </th> <th> Df </th> <th> Sum of Sq </th> <th> F </th> <th> Pr(&gt;F) </th>  </tr>
   <tr> <td> 1 </td> <td align="right"> 243 </td> <td align="right"> 12606436.21 </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> <td align="right">  </td> </tr>
@@ -211,7 +213,7 @@ fit <- lm(saleskg^(1/3) ~ I(tem^2)+tem*humidity*ppp, data = tmpseason)
 ## F-statistic:  20.94 on 8 and 267 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:01:15 2015 -->
+<!-- Tue Nov 24 17:39:28 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> -705.0332 </td> <td align="right"> 281.9774 </td> <td align="right"> -2.50 </td> <td align="right"> 0.0130 </td> </tr>
@@ -368,7 +370,7 @@ fit <- lm(saleskg^(1/3) ~ tem+I(tem^2), data = tmpseason)
 ## F-statistic:  269.52 on 2 and 273 DF,  p-value: < 2.22e-16
 ```
 <!-- html table generated in R 3.2.2 by xtable 1.8-0 package -->
-<!-- Tue Nov 24 17:01:17 2015 -->
+<!-- Tue Nov 24 17:39:29 2015 -->
 <table border=1>
 <tr> <th>  </th> <th> Estimate </th> <th> Std. Error </th> <th> t value </th> <th> Pr(&gt;|t|) </th>  </tr>
   <tr> <td align="right"> (Intercept) </td> <td align="right"> 4.3871 </td> <td align="right"> 0.0971 </td> <td align="right"> 45.19 </td> <td align="right"> 0.0000 </td> </tr>
