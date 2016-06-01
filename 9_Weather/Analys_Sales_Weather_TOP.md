@@ -52,7 +52,8 @@ library("xtable")
 library("car")
 ```
 
-Загрузка обработанных данных
+Загрузка обработанных данных  
+Отчет с деталями подготовки данных доступен [по ссылке](https://github.com/Grag2015/ice-cream/blob/master/9_Weather/Preproc-weather.md)   
 
 ```r
 retail <- dget(file = "./retailtidy")
